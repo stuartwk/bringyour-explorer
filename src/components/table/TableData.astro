@@ -1,0 +1,21 @@
+---
+interface Props {
+  href?: string;
+}
+
+const { href } = Astro.props;
+---
+
+<td class="p-0">
+  {
+    href ? (
+      <a class="block w-full" href={`/network/provider-locations/${href}`}>
+        <slot />
+      </a>
+    ) : (
+      <div>
+        <slot />
+      </div>
+    )
+  }
+</td>

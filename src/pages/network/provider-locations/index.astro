@@ -1,0 +1,68 @@
+---
+import TableData from "../../../components/table/TableData.astro";
+import TableRow from "../../../components/table/TableRow.astro";
+import { PROVIDER_LOCATIONS_URL } from "../../../constants";
+import Layout from "../../../layouts/Layout.astro";
+import type { ProviderLocationsResponse } from "../../../types";
+
+const res = await fetch(PROVIDER_LOCATIONS_URL);
+const data = (await res.json()) as ProviderLocationsResponse;
+const { locations } = data;
+
+// sort locations by country code
+locations.sort((a, b) => a.country_code.localeCompare(b.country_code));
+
+const providerCount = locations
+  .reduce((acc, location) => acc + location.provider_count, 0)
+  .toLocaleString();
+---
+
+<Layout
+  title="Provider Locations"
+  description="BringYour VPN Provider Locations"
+>
+  <div><span class="font-bold">Total Providers:</span> {providerCount}</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>ID</th>
+        <th>Country</th>
+        <th>Provider Count</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {
+        locations.map((location) => (
+          <TableRow>
+            <TableData
+              href={`/network/provider-locations/${location.location_id}`}
+            >
+              {location.name}
+            </TableData>
+
+            <TableData
+              href={`/network/provider-locations/${location.location_id}`}
+            >
+              {location.location_id}
+            </TableData>
+
+            <TableData
+              href={`/network/provider-locations/${location.location_id}`}
+            >
+              {location.country_code}
+            </TableData>
+
+            <TableData
+              href={`/network/provider-locations/${location.location_id}`}
+            >
+              {location.provider_count}
+            </TableData>
+          </TableRow>
+        ))
+      }
+    </tbody>
+  </table>
+</Layout>

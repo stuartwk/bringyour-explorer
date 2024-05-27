@@ -1,0 +1,66 @@
+---
+import TableData from "../../../components/table/TableData.astro";
+import TableRow from "../../../components/table/TableRow.astro";
+import { FIND_PROVIDERS_URL } from "../../../constants";
+import Layout from "../../../layouts/Layout.astro";
+import type { LocationProvider } from "../../../types";
+
+const { id } = Astro.params;
+
+const params = {
+  specs: [
+    {
+      location_id: id,
+    },
+  ],
+  count: 10,
+  exclude_client_ids: [],
+};
+
+const res = await fetch(FIND_PROVIDERS_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(params),
+});
+
+if (!res.ok) {
+  console.error("Failed to fetch providers");
+  const text = await res.text();
+  console.log("text: ", text);
+  return;
+}
+
+const { providers } = (await res.json()) as {
+  providers: LocationProvider[];
+};
+---
+
+<Layout
+  title="Providers in Location"
+  description="Searching Providers in Location"
+>
+  <a class="text-blue-500 font-bold" href="/network/provider-locations"
+    >Back to Locations</a
+  >
+  <table>
+    <thead>
+      <tr>
+        <th>Client ID</th>
+        <th>Estimated Bytes / Second</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        providers.map((provider) => (
+          <TableRow>
+            <TableData>{provider.client_id}</TableData>
+
+            <TableData>{provider.estimated_bytes_per_second}</TableData>
+          </TableRow>
+        ))
+      }
+    </tbody>
+  </table>
+</Layout>
