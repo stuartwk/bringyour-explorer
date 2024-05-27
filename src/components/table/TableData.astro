@@ -9,7 +9,7 @@ const { href } = Astro.props;
 <td class="p-0">
   {
     href ? (
-      <a class="block w-full" href={`/network/provider-locations/${href}`}>
+      <a class="block w-full" href={href}>
         <slot />
       </a>
     ) : (

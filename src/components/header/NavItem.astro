@@ -1,0 +1,20 @@
+---
+interface Props {
+  href: string;
+  label: string;
+  iconPath: string;
+  isActive?: boolean;
+}
+
+const { isActive, href, label, iconPath } = Astro.props;
+---
+
+<a
+  href={href}
+  class={`flex mb-4 ${isActive ? "border-r border-blue-500" : "hover:border-r hover:border-blue-700"}`}
+>
+  <img src={iconPath} />
+  <span class={`ml-1 font-bold ${isActive ? "text-blue-500" : ""}`}
+    >{label}</span
+  >
+</a>

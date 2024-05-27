@@ -1,0 +1,31 @@
+---
+import NavItem from "./NavItem.astro";
+
+const url = new URL(Astro.url);
+const { pathname } = url;
+---
+
+<header
+  class="sticky top-0 left-0 w-full h-screen py-8 pl-8 border-r border-blue-800"
+>
+  <h1 class="font-bold mb-8 translate-x-px">BringYour Explorer</h1>
+  <nav class="text-gray-300 translate-x-px">
+    <NavItem
+      href="stats"
+      isActive={pathname === "/stats"}
+      label="Stats"
+      iconPath={pathname === "/stats"
+        ? "/icons/query_stats_active.svg"
+        : "/icons/query_stats.svg"}
+    />
+
+    <NavItem
+      href="/network/provider-locations"
+      isActive={pathname === "/network/provider-locations"}
+      label="Locations"
+      iconPath={pathname === "/network/provider-locations"
+        ? "/icons/location_on_active.svg"
+        : "/icons/location_on.svg"}
+    />
+  </nav>
+</header>

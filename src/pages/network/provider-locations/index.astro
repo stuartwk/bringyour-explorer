@@ -4,6 +4,7 @@ import TableRow from "../../../components/table/TableRow.astro";
 import { PROVIDER_LOCATIONS_URL } from "../../../constants";
 import Layout from "../../../layouts/Layout.astro";
 import type { ProviderLocationsResponse } from "../../../types";
+import { truncateId } from "../../../utils";
 
 const res = await fetch(PROVIDER_LOCATIONS_URL);
 const data = (await res.json()) as ProviderLocationsResponse;
@@ -11,6 +12,15 @@ const { locations } = data;
 
 // sort locations by country code
 locations.sort((a, b) => a.country_code.localeCompare(b.country_code));
+
+// within each country, sort by name
+locations.sort((a, b) => {
+  if (a.country_code === b.country_code) {
+    return a.name.localeCompare(b.name);
+  }
+
+  return 0;
+});
 
 const providerCount = locations
   .reduce((acc, location) => acc + location.provider_count, 0)
@@ -23,46 +33,48 @@ const providerCount = locations
 >
   <div><span class="font-bold">Total Providers:</span> {providerCount}</div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>ID</th>
-        <th>Country</th>
-        <th>Provider Count</th>
-      </tr>
-    </thead>
+  <div class="flex p-8 bg-blue-800 rounded">
+    <table class="w-full">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>ID</th>
+          <th>Country</th>
+          <th>Provider Count</th>
+        </tr>
+      </thead>
 
-    <tbody>
-      {
-        locations.map((location) => (
-          <TableRow>
-            <TableData
-              href={`/network/provider-locations/${location.location_id}`}
-            >
-              {location.name}
-            </TableData>
+      <tbody>
+        {
+          locations.map((location) => (
+            <TableRow>
+              <TableData
+                href={`/network/provider-locations/${location.location_id}`}
+              >
+                {location.name}
+              </TableData>
 
-            <TableData
-              href={`/network/provider-locations/${location.location_id}`}
-            >
-              {location.location_id}
-            </TableData>
+              <TableData
+                href={`/network/provider-locations/${location.location_id}`}
+              >
+                {truncateId(location.location_id)}
+              </TableData>
 
-            <TableData
-              href={`/network/provider-locations/${location.location_id}`}
-            >
-              {location.country_code}
-            </TableData>
+              <TableData
+                href={`/network/provider-locations/${location.location_id}`}
+              >
+                {location.country_code}
+              </TableData>
 
-            <TableData
-              href={`/network/provider-locations/${location.location_id}`}
-            >
-              {location.provider_count}
-            </TableData>
-          </TableRow>
-        ))
-      }
-    </tbody>
-  </table>
+              <TableData
+                href={`/network/provider-locations/${location.location_id}`}
+              >
+                {location.provider_count}
+              </TableData>
+            </TableRow>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
 </Layout>

@@ -1,5 +1,5 @@
 ---
-import Header from "../components/Header.astro";
+import Header from "../components/header/Header.astro";
 
 interface Props {
   title: string;
@@ -11,6 +11,9 @@ const { title, schema, description } = Astro.props;
 
 // get the full url
 const url = new URL(Astro.url);
+// console.log('url is: ', url)
+
+// get after the base url
 ---
 
 <!doctype html>
@@ -39,8 +42,12 @@ const url = new URL(Astro.url);
     )}
 
   </head>
-  <body class="container mx-auto">
-    <Header />
-    <slot />
+  <body class="grid bg-blue-900 text-white grid-cols-12">
+    <div class="relative col-span-3">
+      <Header />
+    </div>
+    <div class="col-span-9 p-8">
+      <slot />
+    </div>
   </body>
 </html>
