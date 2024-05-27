@@ -1,0 +1,117 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { STATS_URL } from "../../constants";
+import type { StatsResponse } from "../../types";
+import LineChart from "../../components/LineChart";
+import {
+  getMostRecentDays,
+  parseLineChartData,
+  formatLineChartDate,
+  formatKeysToLineChartDates,
+} from "../../utils";
+
+const res = await fetch(STATS_URL);
+const data = (await res.json()) as StatsResponse;
+console.log(data);
+
+const networkData = formatKeysToLineChartDates(
+  getMostRecentDays(data.networks_data, 7)
+);
+console.log("test is: ", networkData);
+
+const devicesData = formatKeysToLineChartDates(
+  getMostRecentDays(data.devices_data, 7)
+);
+console.log("devicesData is: ", devicesData);
+
+const transferData = formatKeysToLineChartDates(
+  getMostRecentDays(data.all_transfer_data, 7)
+);
+
+const packetsData = formatKeysToLineChartDates(
+  getMostRecentDays(data.all_packets_data, 7)
+);
+
+const providersData = formatKeysToLineChartDates(
+  getMostRecentDays(data.providers_data, 7)
+);
+
+const providersSuperspeedData = formatKeysToLineChartDates(
+  getMostRecentDays(data.providers_superspeed_data, 7)
+);
+
+const countriesData = formatKeysToLineChartDates(
+  getMostRecentDays(data.countries_data, 7)
+);
+
+const regionsData = formatKeysToLineChartDates(
+  getMostRecentDays(data.regions_data, 7)
+);
+
+const citiesData = formatKeysToLineChartDates(
+  getMostRecentDays(data.cities_data, 7)
+);
+
+const extenderTransferData = formatKeysToLineChartDates(
+  getMostRecentDays(data.extender_transfer_data, 7)
+);
+
+const extenderData = formatKeysToLineChartDates(
+  getMostRecentDays(data.extenders_data, 7)
+);
+
+const extenderSuperspeedData = formatKeysToLineChartDates(
+  getMostRecentDays(data.extenders_superspeed_data, 7)
+);
+---
+
+<Layout title="Network Stats" description="BringYour Network Stats">
+  <h1 class="font-bold text-lg mb-8">Network Stats</h1>
+  <div class="bg-blue-800 rounded p-8">
+    <div class="grid grid-cols-3 gap-4">
+      <LineChart label="Network" client:only="react" data={networkData} />
+
+      <LineChart label="Devices" client:only="react" data={devicesData} />
+
+      <LineChart
+        label="Transfer Data"
+        client:only="react"
+        data={transferData}
+      />
+
+      <LineChart label="Packets" client:only="react" data={packetsData} />
+
+      <LineChart label="Providers" client:only="react" data={providersData} />
+
+      <LineChart
+        label="Providers Superspeed"
+        client:only="react"
+        data={providersSuperspeedData}
+      />
+
+      <LineChart label="Countries" client:only="react" data={countriesData} />
+
+      <LineChart label="Regions" client:only="react" data={regionsData} />
+
+      <LineChart label="Cities" client:only="react" data={citiesData} />
+
+      <LineChart
+        label="Extender Transfer Data"
+        client:only="react"
+        data={extenderTransferData}
+      />
+
+      <LineChart
+        label="Extenders Data"
+        client:only="react"
+        data={extenderData}
+      />
+
+      <LineChart
+        label="Extenders Superspeed Data"
+        client:only="react"
+        data={extenderSuperspeedData}
+      />
+    </div>
+  </div>
+</Layout>
