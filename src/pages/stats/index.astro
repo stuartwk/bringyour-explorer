@@ -3,26 +3,18 @@ import Layout from "../../layouts/Layout.astro";
 import { STATS_URL } from "../../constants";
 import type { StatsResponse } from "../../types";
 import LineChart from "../../components/LineChart";
-import {
-  getMostRecentDays,
-  parseLineChartData,
-  formatLineChartDate,
-  formatKeysToLineChartDates,
-} from "../../utils";
+import { getMostRecentDays, formatKeysToLineChartDates } from "../../utils";
 
 const res = await fetch(STATS_URL);
 const data = (await res.json()) as StatsResponse;
-console.log(data);
 
 const networkData = formatKeysToLineChartDates(
   getMostRecentDays(data.networks_data, 7)
 );
-console.log("test is: ", networkData);
 
 const devicesData = formatKeysToLineChartDates(
   getMostRecentDays(data.devices_data, 7)
 );
-console.log("devicesData is: ", devicesData);
 
 const transferData = formatKeysToLineChartDates(
   getMostRecentDays(data.all_transfer_data, 7)
@@ -68,7 +60,7 @@ const extenderSuperspeedData = formatKeysToLineChartDates(
 <Layout title="Network Stats" description="BringYour Network Stats">
   <h1 class="font-bold text-lg mb-8">Network Stats</h1>
   <div class="bg-blue-800 rounded p-8">
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
       <LineChart label="Network" client:only="react" data={networkData} />
 
       <LineChart label="Devices" client:only="react" data={devicesData} />
