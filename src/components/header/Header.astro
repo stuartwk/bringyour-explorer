@@ -6,8 +6,19 @@ const { pathname } = url;
 ---
 
 <header>
-  <h1 class="font-bold mb-8 translate-x-px">BringYour Explorer</h1>
-  <nav class="text-gray-300 translate-x-px">
+  <h1 class="font-bold mb-4 sm:mb-8 translate-x-px">
+    <a class="flex items-center space-x-4" href="/stats">
+      <img
+        class="w-8 h-8"
+        src="/icons/bringyour-logo.webp"
+        alt="BringYour Explorer"
+      />
+      <span>ur.io</span>
+    </a>
+  </h1>
+  <nav
+    class="text-gray-300 translate-x-px flex sm:flex-col space-x-8 sm:space-x-0"
+  >
     <NavItem
       href="/stats"
       isActive={pathname === "/stats"}
