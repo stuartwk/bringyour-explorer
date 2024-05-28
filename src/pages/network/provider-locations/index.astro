@@ -50,9 +50,9 @@ Astro.response.headers.set(
       <thead>
         <tr>
           <TableHead>Name</TableHead>
-          <TableHead>ID</TableHead>
+          <TableHead className="hidden sm:block">ID</TableHead>
           <TableHead>Country</TableHead>
-          <TableHead>Provider Count</TableHead>
+          <TableHead>Providers</TableHead>
         </tr>
       </thead>
 
@@ -67,6 +67,7 @@ Astro.response.headers.set(
               </TableData>
 
               <TableData
+                className="hidden sm:block"
                 href={`/network/provider-locations/${location.location_id}`}
               >
                 {truncateId(location.location_id)}

@@ -1,12 +1,13 @@
 ---
 interface Props {
   href?: string;
+  className?: string;
 }
 
-const { href } = Astro.props;
+const { href, className } = Astro.props;
 ---
 
-<td class="p-0 text-gray-300">
+<td class={`p-0 text-gray-300 text-sm sm:text-base ${className ?? ""}`}>
   {
     href ? (
       <a class="block w-full px-2 py-2" href={href}>
