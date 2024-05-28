@@ -39,3 +39,4 @@ Feel free to check [our documentation](https://docs.astro.build) or jump into ou
 ## TODO
 
 - Map on provider locations page
+- Individual chart stats pages
