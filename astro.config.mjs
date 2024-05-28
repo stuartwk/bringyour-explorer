@@ -9,7 +9,9 @@ export default defineConfig({
   output: "server",
   integrations: [tailwind(), react()],
   redirects: {
-    "/": "/stats"
+    "/": "/stats",
   },
-  adapter: vercel()
+  adapter: vercel({
+    maxDuration: 20,
+  }),
 });
