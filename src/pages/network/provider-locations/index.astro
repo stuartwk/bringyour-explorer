@@ -1,5 +1,7 @@
 ---
+import ContentArea from "../../../components/ContentArea.astro";
 import TableData from "../../../components/table/TableData.astro";
+import TableHead from "../../../components/table/TableHead.astro";
 import TableRow from "../../../components/table/TableRow.astro";
 import { PROVIDER_LOCATIONS_URL } from "../../../constants";
 import Layout from "../../../layouts/Layout.astro";
@@ -25,22 +27,32 @@ locations.sort((a, b) => {
 const providerCount = locations
   .reduce((acc, location) => acc + location.provider_count, 0)
   .toLocaleString();
+
+Astro.response.headers.set(
+  "Cache-Control",
+  "public, max-age=0, s-maxage=43200, stale-while-revalidate=43200"
+);
 ---
 
 <Layout
   title="Provider Locations"
   description="BringYour VPN Provider Locations"
 >
-  <div><span class="font-bold">Total Providers:</span> {providerCount}</div>
+  <h1 class="font-bold text-lg mb-8">Provider Locations</h1>
 
-  <div class="flex p-8 bg-blue-800 rounded">
+  <ContentArea>
+    <div class="border-b border-blue-700 w-full pb-4 mb-4">
+      <span class="font-bold">Total Providers:</span>
+      {providerCount}
+    </div>
+
     <table class="w-full">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>ID</th>
-          <th>Country</th>
-          <th>Provider Count</th>
+          <TableHead>Name</TableHead>
+          <TableHead>ID</TableHead>
+          <TableHead>Country</TableHead>
+          <TableHead>Provider Count</TableHead>
         </tr>
       </thead>
 
@@ -76,5 +88,5 @@ const providerCount = locations
         }
       </tbody>
     </table>
-  </div>
+  </ContentArea>
 </Layout>

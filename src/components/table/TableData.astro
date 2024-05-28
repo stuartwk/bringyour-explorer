@@ -6,14 +6,14 @@ interface Props {
 const { href } = Astro.props;
 ---
 
-<td class="p-0">
+<td class="p-0 text-gray-300">
   {
     href ? (
-      <a class="block w-full" href={href}>
+      <a class="block w-full px-2 py-2" href={href}>
         <slot />
       </a>
     ) : (
-      <div>
+      <div class="block w-full px-2 py-2">
         <slot />
       </div>
     )

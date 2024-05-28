@@ -18,16 +18,25 @@ const LineChart: React.FC<LineChartProps> = ({ label, data }) => {
 
   // get the lowest and highest values of the y-axis for the VictoryChart domain
   const yValues = chartData.map(({ y }) => y);
-  const yMin = Math.min(...yValues);
+  let yMin = Math.min(...yValues);
   let yMax = Math.max(...yValues);
   // Ensure yMin and yMax are not the same
   if (yMin === yMax) {
     yMax = yMin + 1;
   }
 
+  if (yMin === 1) {
+    yMin = 0;
+  }
+
+  const tickValues = Array.from(
+    { length: yMax - yMin + 1 },
+    (_, i) => yMin + i
+  );
+
   return (
-    <div className="relative bg-blue-900 rounded pt-4 px-4">
-      <p className="absolute top-2 left-6 text-sm">{label}</p>
+    <div className="relative bg-blue-900 rounded pt-4 px-4 shadow">
+      <p className="absolute top-2 left-6 text-sm text-gray-300">{label}</p>
       <VictoryChart
         padding={{ top: 50, bottom: 50, left: 60, right: 50 }}
         domain={{ y: [yMin, yMax] }}
@@ -51,6 +60,7 @@ const LineChart: React.FC<LineChartProps> = ({ label, data }) => {
         />
         <VictoryAxis
           dependentAxis
+          tickValues={tickValues}
           style={{
             axis: { stroke: "#397CC9" },
             ticks: { stroke: "#397CC9" },

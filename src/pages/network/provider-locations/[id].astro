@@ -1,9 +1,14 @@
 ---
+import ContentArea from "../../../components/ContentArea.astro";
 import TableData from "../../../components/table/TableData.astro";
+import TableHead from "../../../components/table/TableHead.astro";
 import TableRow from "../../../components/table/TableRow.astro";
-import { FIND_PROVIDERS_URL } from "../../../constants";
+import { FIND_PROVIDERS_URL, PROVIDER_LOCATIONS_URL } from "../../../constants";
 import Layout from "../../../layouts/Layout.astro";
-import type { LocationProvider } from "../../../types";
+import type {
+  LocationProvider,
+  ProviderLocationsResponse,
+} from "../../../types";
 
 const { id } = Astro.params;
 
@@ -17,7 +22,9 @@ const params = {
   exclude_client_ids: [],
 };
 
-const res = await fetch(FIND_PROVIDERS_URL, {
+const providerLocationsReq = await fetch(PROVIDER_LOCATIONS_URL);
+
+const locationProvidersReq = await fetch(FIND_PROVIDERS_URL, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -25,42 +32,75 @@ const res = await fetch(FIND_PROVIDERS_URL, {
   body: JSON.stringify(params),
 });
 
-if (!res.ok) {
+const [providerLocationsRes, locationProvidersRes] = await Promise.all([
+  providerLocationsReq,
+  locationProvidersReq,
+]);
+
+if (!locationProvidersRes.ok) {
   console.error("Failed to fetch providers");
-  const text = await res.text();
+  const text = await locationProvidersRes.text();
   console.log("text: ", text);
   return;
 }
 
-const { providers } = (await res.json()) as {
+const { providers } = (await locationProvidersRes.json()) as {
   providers: LocationProvider[];
 };
+
+const data = (await providerLocationsRes.json()) as ProviderLocationsResponse;
+const { locations } = data;
+
+// find the location with a matching client id
+const location = locations.find((location) => location.location_id === id);
+console.log("matching location is: ", location);
+
+Astro.response.headers.set(
+  "Cache-Control",
+  "public, max-age=0, s-maxage=43200, stale-while-revalidate=43200"
+);
 ---
 
 <Layout
-  title="Providers in Location"
-  description="Searching Providers in Location"
+  title={`Providers in ${location?.name ?? "Location"}`}
+  description={`Searching Providers in ${location?.name ?? "Location"}`}
 >
-  <a class="text-blue-500 font-bold" href="/network/provider-locations"
-    >Back to Locations</a
+  <a
+    class="text-blue-500 font-bold mb-4 flex items-center text-sm"
+    href="/network/provider-locations"
   >
-  <table>
-    <thead>
-      <tr>
-        <th>Client ID</th>
-        <th>Estimated Bytes / Second</th>
-      </tr>
-    </thead>
-    <tbody>
-      {
-        providers.map((provider) => (
-          <TableRow>
-            <TableData>{provider.client_id}</TableData>
+    <img class="w-4" src="/icons/arrow_back_ios.svg" />
+    <span>Browse Locations</span>
+  </a>
 
-            <TableData>{provider.estimated_bytes_per_second}</TableData>
-          </TableRow>
-        ))
-      }
-    </tbody>
-  </table>
+  <ContentArea>
+    <div class="flex flex-col mb-4 pb-4 border-b border-blue-700">
+      <h1 class="font-bold text-lg">
+        Providers in {location?.name ?? "Location"}
+      </h1>
+      <span class="text-sm text-gray-300"
+        >Location ID: {location?.location_id}</span
+      >
+    </div>
+
+    <table class="w-full">
+      <thead>
+        <tr>
+          <TableHead>Client ID</TableHead>
+          <TableHead>Bytes / Second</TableHead>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          providers.map((provider) => (
+            <TableRow>
+              <TableData>{provider.client_id}</TableData>
+
+              <TableData>{provider.estimated_bytes_per_second}</TableData>
+            </TableRow>
+          ))
+        }
+      </tbody>
+    </table>
+  </ContentArea>
 </Layout>

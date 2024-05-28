@@ -4,6 +4,7 @@ import { STATS_URL } from "../../constants";
 import type { StatsResponse } from "../../types";
 import LineChart from "../../components/LineChart";
 import { getMostRecentDays, formatKeysToLineChartDates } from "../../utils";
+import ContentArea from "../../components/ContentArea.astro";
 
 const res = await fetch(STATS_URL);
 const data = (await res.json()) as StatsResponse;
@@ -55,11 +56,16 @@ const extenderData = formatKeysToLineChartDates(
 const extenderSuperspeedData = formatKeysToLineChartDates(
   getMostRecentDays(data.extenders_superspeed_data, 7)
 );
+
+Astro.response.headers.set(
+  "Cache-Control",
+  "public, max-age=0, s-maxage=43200, stale-while-revalidate=43200"
+);
 ---
 
 <Layout title="Network Stats" description="BringYour Network Stats">
   <h1 class="font-bold text-lg mb-8">Network Stats</h1>
-  <div class="bg-blue-800 rounded p-8">
+  <ContentArea>
     <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
       <LineChart label="Network" client:only="react" data={networkData} />
 
@@ -105,5 +111,5 @@ const extenderSuperspeedData = formatKeysToLineChartDates(
         data={extenderSuperspeedData}
       />
     </div>
-  </div>
+  </ContentArea>
 </Layout>
