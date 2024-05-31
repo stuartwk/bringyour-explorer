@@ -34,6 +34,13 @@ const LineChart: React.FC<LineChartProps> = ({ label, data }) => {
     (_, i) => yMin + i
   );
 
+  // if the tick values range is too big, reduce the number of ticks
+  if (tickValues.length > 10) {
+    const reducedTickValues = tickValues.filter((_, index) => index % 2 === 0);
+    tickValues.length = 0;
+    tickValues.push(...reducedTickValues);
+  }
+
   return (
     <div className="relative bg-blue-900 rounded pt-4 px-4 shadow">
       <p className="absolute top-2 left-6 text-sm text-gray-300">{label}</p>
