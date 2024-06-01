@@ -31,13 +31,24 @@ const LineChart: React.FC<LineChartProps> = ({ label, data }) => {
 
   let tickValues = Array.from({ length: yMax - yMin + 1 }, (_, i) => yMin + i);
 
-  // show only 10 ticks on the y axis
-  if (tickValues.length > 10) {
+  if (tickValues.length > 2) {
     const newTickValues = [];
-    const step = Math.floor(tickValues.length / 10);
-    for (let i = 0; i < tickValues.length; i += step) {
-      newTickValues.push(tickValues[i]);
+
+    // Round the first tick down to the nearest multiple of 10
+    const firstTick = Math.floor(tickValues[0] / 10) * 10;
+    newTickValues.push(firstTick);
+
+    // Add ticks that are multiples of 10
+    for (let i = 1; i < tickValues.length - 1; i++) {
+      if (tickValues[i] % 10 === 0) {
+        newTickValues.push(tickValues[i]);
+      }
     }
+
+    // Round the last tick up to the nearest multiple of 10
+    const lastTick = Math.ceil(tickValues[tickValues.length - 1] / 10) * 10;
+    newTickValues.push(lastTick);
+
     tickValues = newTickValues;
   }
 
@@ -46,7 +57,7 @@ const LineChart: React.FC<LineChartProps> = ({ label, data }) => {
       <p className="absolute top-2 left-6 text-sm text-gray-300">{label}</p>
       <VictoryChart
         padding={{ top: 50, bottom: 50, left: 60, right: 50 }}
-        domain={{ y: [yMin, yMax] }}
+        domain={{ y: [tickValues[0], tickValues[tickValues.length - 1]] }}
         containerComponent={
           <VictoryVoronoiContainer
             voronoiDimension="x"
