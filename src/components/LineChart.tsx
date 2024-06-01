@@ -29,16 +29,16 @@ const LineChart: React.FC<LineChartProps> = ({ label, data }) => {
     yMin = 0;
   }
 
-  const tickValues = Array.from(
-    { length: yMax - yMin + 1 },
-    (_, i) => yMin + i
-  );
+  let tickValues = Array.from({ length: yMax - yMin + 1 }, (_, i) => yMin + i);
 
-  // if the tick values range is too big, reduce the number of ticks
+  // show only 10 ticks on the y axis
   if (tickValues.length > 10) {
-    const reducedTickValues = tickValues.filter((_, index) => index % 2 === 0);
-    tickValues.length = 0;
-    tickValues.push(...reducedTickValues);
+    const newTickValues = [];
+    const step = Math.floor(tickValues.length / 10);
+    for (let i = 0; i < tickValues.length; i += step) {
+      newTickValues.push(tickValues[i]);
+    }
+    tickValues = newTickValues;
   }
 
   return (
