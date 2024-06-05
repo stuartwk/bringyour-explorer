@@ -1,4 +1,4 @@
-# ur.io Network Explorer
+# BringYour Network Explorer
 
 ## 🚀 Project Structure
 
