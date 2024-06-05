@@ -38,11 +38,20 @@ const LineChart: React.FC<LineChartProps> = ({ label, data }) => {
     const firstTick = Math.floor(tickValues[0] / 10) * 10;
     newTickValues.push(firstTick);
 
-    // Add ticks that are multiples of 10
-    for (let i = 1; i < tickValues.length - 1; i++) {
-      if (tickValues[i] % 10 === 0) {
-        newTickValues.push(tickValues[i]);
-      }
+    // Calculate the step size based on the range of y-values
+    const range = tickValues[tickValues.length - 1] - firstTick;
+    let step = Math.ceil(range / 10);
+
+    // Ensure the step size is a multiple of 10
+    step = Math.ceil(step / 10) * 10;
+
+    // Add ticks that are multiples of the step size
+    for (
+      let i = firstTick + step;
+      i < tickValues[tickValues.length - 1];
+      i += step
+    ) {
+      newTickValues.push(i);
     }
 
     // Round the last tick up to the nearest multiple of 10
